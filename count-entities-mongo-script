@@ -1,0 +1,23 @@
+db.entities.aggregate([
+    {
+        $match: {
+            name: { $not: {$size: 0} },
+            orgId: {$eq: "abc"},
+            created_at: {$gt: 1491028755570}
+        }
+    },
+    { $unwind: "$name" },
+    {
+        $group: {
+            _id: {$toLower: '$name'},
+            count: { $sum: 1 }
+        }
+    },
+    {
+        $match: {
+            count: { $gte: 2 }
+        }
+    },
+    { $sort : { count : -1} },
+    { $limit : 1000 }
+]);
